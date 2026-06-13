@@ -1,0 +1,3 @@
+module.exports = {
+  path: '/producoes'
+};

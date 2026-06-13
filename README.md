@@ -89,6 +89,7 @@ projeto-producao/
 ├── docker-compose.yml
 ├── package.json        ← scripts npm
 ├── start.js            ← script de inicialização
+├── stop.js             ← script que derruba tudo
 └── test.js             ← script que roda todos os testes
 ```
 
@@ -208,16 +209,16 @@ Se algum teste falhar, aparece em vermelho com o motivo:
 ### Derrubar
 
 ```bash
-docker compose down
+npm run stop
 ```
+
+O script `stop.js` verifica se há containers rodando e derruba tudo limpo. Se não houver nada rodando, avisa sem dar erro.
 
 ### Ver logs
 
 ```bash
 docker compose logs -f
-```
-
-### Variáveis de ambiente (`api/.env`)
+``` (`api/.env`)
 
 ```env
 DB_HOST=postgres
@@ -519,10 +520,12 @@ npx playwright test
 - [ ] `docker-compose.yml` com os 3 containers
 - [ ] `Dockerfile` da API
 - [ ] `init.sql` com criação da tabela
-- [ ] `package.json` na raiz com scripts `start` e `test`
+- [ ] `package.json` na raiz com scripts `start`, `stop` e `test`
 - [ ] `start.js` com verificações de Docker e subida dos containers
+- [ ] `stop.js` que derruba todos os containers limpo
 - [ ] `test.js` que roda todos os testes em sequência com resumo comparativo no terminal
 - [ ] `npm run start` sobe tudo sem erro
+- [ ] `npm run stop` derruba tudo sem erro
 - [ ] `npm run test` executa todos os testes e exibe resultado final
 
 ### Felipe
