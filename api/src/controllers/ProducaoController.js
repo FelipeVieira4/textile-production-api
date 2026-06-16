@@ -1,4 +1,5 @@
 const producaoRepository=require('../repositories/ProducaoRepository');
+const producaoService=require('../services/ProducaoService')
 
 const obterProducaoPeloId = async (req, res) => {
   try {
@@ -53,7 +54,7 @@ const gravarProducao = async (req, res) => {
       return res.status(400).json({ message: "Todos os campos da produção são obrigatórios." });
     }
 
-    const novaProducao = await producaoRepository.gravarProducao({
+    const novaProducao = await producaoService.criarProducao({
       data_producao,
       numero_tear,
       codigo_produto,

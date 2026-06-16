@@ -11,29 +11,29 @@ const obterPeloId = async(id) => {
 const obterProducoesPaginada = async (page, limit, turno) => {
   const offset = (page - 1) * limit;
   const values = [];
-  let queryText = 'SELECT * FROM producoes';
-  let countQueryText = 'SELECT COUNT(*) FROM producoes';
+  let query = 'SELECT * FROM producoes';
+  let queryNumRegistros = 'SELECT COUNT(*) FROM producoes';
 
   if (turno) {
-    queryText += ' WHERE turno = $1';
-    countQueryText += ' WHERE turno = $1';
+    query += ' WHERE turno = $1';
+    queryNumRegistros += ' WHERE turno = $1';
     values.push(turno);
   }
 
   const limitPlaceholder = values.length + 1;
   const offsetPlaceholder = values.length + 2;
   
-  queryText += ` ORDER BY id ASC LIMIT $${limitPlaceholder} OFFSET $${offsetPlaceholder}`;
+  query += ` ORDER BY id ASC LIMIT $${limitPlaceholder} OFFSET $${offsetPlaceholder}`;
   
   const finalValues = [...values, limit, offset];
 
-  const dataResult = await poolPgSQL.query(queryText, finalValues);
-  const countResult = await poolPgSQL.query(countQueryText, values);
+  const resul = await poolPgSQL.query(query, finalValues);
+  const numRegistros = await poolPgSQL.query(queryNumRegistros, values);
   
-  const totalRegistros = parseInt(countResult.rows[0].count);
+  const totalRegistros = parseInt(numRegistros.rows[0].count);
 
   return {
-    dados: dataResult.rows,
+    dados: resul.rows,
     totalRegistros,
     totalPaginas: Math.ceil(totalRegistros / limit)
   };
