@@ -1,8 +1,8 @@
 const producaoRepository=require('../repositories/ProducaoRepository');
 
 const criarProducao = async (dados) => {
-  const { data_producao, numero_tear, codigo_produto, qualidade, quilos, pecas }=dados;
-  let {turno}=dados;
+  const { data_producao, numero_tear, codigo_produto, quilos, pecas }=dados;
+  let {qualidade,turno}=dados;
   
   if (!data_producao || !numero_tear || !codigo_produto || turno === undefined || !qualidade || quilos === undefined || pecas === undefined) {
     throw new Error("Todos los campos são estritamente obrigatórios.");
@@ -10,26 +10,15 @@ const criarProducao = async (dados) => {
 
   turno=parseInt(turno)
   if (turno<1||turno>3) throw new Error("O turno informado deve ser obrigatoriamente 1, 2 ou 3.");
-  
-  let dataFormatada = data_producao;
 
-  if (data_producao && data_producao.includes('T')) {
-    dataFormatada = data_producao.split('T')[0];
+  const dataSP = new Date().toLocaleString("sv-SE", { timeZone: "America/Sao_Paulo" });
+  const timestampSP = dataSP.replace(" ", "T");
+  if (data_producao > timestampSP) {
+    throw new Error(`A data de produção (${data_producao}) não pode ser uma data futura. Hoje é ${timestampSP}.`);
   }
 
-  // Agora você usa a 'dataFormatada' para fazer a comparação com hoje
-  const hoje = new Date().toISOString().split('T')[0]; 
-
-  if (dataFormatada > hoje) {
-    throw new Error(`A data de produção (${dataFormatada}) não pode ser uma data futura. Hoje é ${hoje}.`);
-  }
-
-  const qualidadesValidas = ['A', 'B', 'C'];
-  const qualidadeFormatada = qualidade.toString().toUpperCase();
-
-  if (!qualidadesValidas.includes(qualidadeFormatada)) {
-    throw new Error("A qualidade deve ser 'A', 'B' ou 'C'.");
-  }
+  qualidade=parseInt(qualidade);
+  if (qualidade<1||qualidade>3) throw new Error("A Qualidade informado deve ser obrigatoriamente 1, 2 ou 3.");
 
   const quilosNum = parseFloat(quilos);
   const pecasInt = parseInt(pecas);
@@ -42,7 +31,7 @@ const criarProducao = async (dados) => {
     numero_tear,
     codigo_produto,
     turno: parseInt(turno),
-    qualidade: qualidadeFormatada,
+    qualidade: qualidade,
     quilos: quilosNum,
     pecas: pecasInt
   });
